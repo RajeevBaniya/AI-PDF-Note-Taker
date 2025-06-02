@@ -80,7 +80,7 @@ export default function Home() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="flex flex-col lg:flex-row items-center justify-center min-h-[90vh] pt-20 sm:pt-28 lg:pt-40 relative overflow-hidden max-w-7xl mx-auto px-2 sm:px-4 gap-y-10 lg:gap-x-32"
+        className="flex flex-col lg:flex-row items-center justify-center min-h-[90vh] pt-10 sm:pt-16 lg:pt-24 relative overflow-visible max-w-7xl mx-auto px-2 sm:px-4 gap-y-10 lg:gap-x-32"
       >
         {/* Decorative background blob */}
         <div className="absolute left-1/2 top-0 -translate-x-1/2 -z-10 w-[700px] h-[700px] bg-gradient-to-tr from-blue-400 via-indigo-300 to-purple-200 opacity-20 rounded-full blur-3xl"></div>
@@ -116,6 +116,7 @@ export default function Home() {
         </div>
         {/* Right Side: Animated PDF Icon in Circle with Red-Circled PDF Icons in a Ring */}
         <div className="flex-1 flex justify-center items-center lg:justify-end lg:items-center w-full h-full min-h-[180px] sm:min-h-[220px] md:min-h-[300px]">
+          <div className="hidden lg:block" style={{ height: "60px" }}></div>
           <div
             className="relative flex justify-center items-center w-full h-full pr-0 sm:pr-4 lg:pr-12 ring-pdf-responsive"
           >
