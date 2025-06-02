@@ -2,6 +2,8 @@
 
 This is a Next.js project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). The application lets users upload PDFs AND take notes fro the pdf using AI .
 
+Live - https://ai-pdf-note-taker-lyart.vercel.app/
+
 ## Features
 
 - **PDF Upload & Note Taking:** Users can upload PDFs and add notes.
