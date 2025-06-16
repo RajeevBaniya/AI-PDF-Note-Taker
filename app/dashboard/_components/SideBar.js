@@ -34,7 +34,7 @@ function SideBar({ onClose }) {
     return (
         <div className="h-full flex flex-col bg-white">
             {/* Logo Section */}
-            <div className="p-4 border-b flex items-center justify-between">
+            <div className="p-4 border-b flex items-center justify-between relative">
                 <Image 
                     src={'/logo.png'} 
                     alt='logo' 
@@ -45,9 +45,9 @@ function SideBar({ onClose }) {
                 />
                 <button 
                     onClick={onClose} 
-                    className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    className="lg:hidden absolute top-1 right-3 p-1.5 hover:bg-gray-100 rounded-full transition-colors bg-white shadow-sm"
                 >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4" />
                 </button>
             </div>
 

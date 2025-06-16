@@ -97,68 +97,70 @@ function UploadPdfDialog({children, isMaxFile}) {
                     {children}
                 </div>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] md:max-w-[500px] p-4 sm:p-6">
-                <DialogHeader className="space-y-3">
-                    <DialogTitle className="text-2xl font-semibold text-center sm:text-left">Upload PDF File</DialogTitle>
+            <DialogContent className="w-[300px] sm:w-[340px] md:w-[360px] p-3 sm:p-3.5 mx-auto rounded-2xl" showCloseButton={false}>
+                <DialogHeader className="space-y-2">
+                    <DialogTitle className="text-base sm:text-lg font-medium text-center">Upload PDF File</DialogTitle>
                     <DialogDescription asChild>
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <h2 className="text-sm font-medium">Select a file to Upload</h2>
-                                <div className="flex flex-col items-center justify-center w-full">
-                                    <label 
-                                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 hover:bg-gray-100"
-                                    >
-                                        <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4">
-                                            <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                                            <p className="mb-2 text-sm text-gray-500 text-center">
-                                                <span className="font-semibold">Click to upload</span> or drag and drop
+                        <div className="space-y-2.5 sm:space-y-3">
+                            <div>
+                                <h2 className="text-sm font-medium mb-1.5">Select a file to Upload</h2>
+                                <label 
+                                    className="flex flex-col items-center justify-center w-full h-[4.5rem] sm:h-20 border-2 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+                                >
+                                    <div className="flex flex-col items-center justify-center px-3 sm:px-4 py-2">
+                                        <Upload className="w-4 sm:w-5 h-4 sm:h-5 mb-1 text-gray-500" />
+                                        <p className="text-xs sm:text-sm text-gray-500 text-center">
+                                            <span className="font-medium">Click to upload</span> or drag and drop
+                                        </p>
+                                        {file && (
+                                            <p className="text-[11px] sm:text-xs text-green-600 mt-0.5 font-medium truncate max-w-full">
+                                                Selected: {file.name}
                                             </p>
-                                            <p className="text-xs text-gray-500 text-center">PDF files only</p>
-                                            {file && (
-                                                <p className="text-xs text-green-600 mt-2 font-medium">
-                                                    Selected: {file.name}
-                                                </p>
-                                            )}
-                                        </div>
-                                        <input 
-                                            type="file" 
-                                            accept="application/pdf"
-                                            className="hidden"
-                                            onChange={OnFileSelect}
-                                        />
-                                    </label>
-                                </div>
+                                        )}
+                                    </div>
+                                    <input 
+                                        type="file" 
+                                        accept="application/pdf"
+                                        className="hidden"
+                                        onChange={OnFileSelect}
+                                    />
+                                </label>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">File Name</label>
+                            
+                            <div>
+                                <label className="text-sm font-medium block mb-1">File Name</label>
                                 <Input 
                                     placeholder="Enter file name" 
                                     value={fileName}
                                     onChange={(e) => setFileName(e.target.value)}
-                                    className="w-full"
+                                    className="w-full text-sm rounded-lg focus:ring-2 focus:ring-black focus:ring-offset-1"
                                 />
                             </div>
                         </div>
                     </DialogDescription>
                 </DialogHeader>
-                <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-0 mt-6">
-                    <DialogClose asChild>
-                        <Button type="button" variant="secondary" className="w-full sm:w-auto">
-                            Close
-                        </Button>
-                    </DialogClose>
+                <DialogFooter className="flex flex-col gap-1.5 sm:gap-2 mt-3">
                     <Button 
                         onClick={OnUpload} 
-                        disabled={loading} 
-                        className="w-full sm:w-auto"
+                        disabled={loading}
+                        className="w-full bg-black hover:bg-gray-800 text-sm py-1.5 sm:py-2 rounded-xl"
                     >
                         {loading ? (
                             <>
-                                <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
+                                <Loader2Icon className="animate-spin mr-2 h-3 sm:h-4 w-3 sm:w-4" />
                                 Uploading...
                             </>
                         ) : 'Upload'}
                     </Button>
+                    <DialogClose asChild>
+                        <Button 
+                            type="button" 
+                            variant="outline" 
+                            className="w-full text-sm py-1.5 sm:py-2 rounded-xl border-2"
+                        >
+                            Close
+                        </Button>
+                    </DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
