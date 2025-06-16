@@ -124,7 +124,7 @@ function Dashboard() {
             <Link href={'/workspace/'+file.fileId}>
               <div className='flex p-5 shadow-md rounded-md flex-col items-center justify-center border cursor-pointer hover:scale-105 transition-all bg-white'>
                 <Image src={'/pdf.png'} alt='file' width={50} height={50}/>
-                <h2 className='mt-3 font-medium text-lg'>{file?.fileName}</h2>
+                <h2 className='mt-3 font-medium text-base text-center break-words w-full line-clamp-2'>{file?.fileName}</h2>
               </div>
             </Link>
             <button
