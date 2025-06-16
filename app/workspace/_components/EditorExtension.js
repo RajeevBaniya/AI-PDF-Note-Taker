@@ -48,12 +48,16 @@ function EditorExtension({editor}) {
             const UnformattedAns=JSON.parse(result);
             console.log("Parsed results:", UnformattedAns);
             let AllUnformattedAns='';
+            let pageReferences = new Set();
 
             // Check if we found any relevant content
             if (UnformattedAns && UnformattedAns.length > 0) {
                 console.log("Found", UnformattedAns.length, "relevant chunks");
                 UnformattedAns.forEach(item=>{
                     AllUnformattedAns=AllUnformattedAns+item.pageContent+' ';
+                    if (item.metadata.pageNumber) {
+                        pageReferences.add(item.metadata.pageNumber);
+                    }
                 });
                 console.log("Combined content length:", AllUnformattedAns.length);
             } else {
@@ -85,7 +89,13 @@ function EditorExtension({editor}) {
                 rawResponse = rawResponse.replace(/^```/g, '').replace(/```$/g, '');
 
                 console.log("Cleaned AI response:", rawResponse);
-                FinalAns = rawResponse;
+                
+                // Add page references to the answer
+                const pageRefs = Array.from(pageReferences).sort((a, b) => a - b);
+                FinalAns = rawResponse + 
+                    (pageRefs.length > 0 ? 
+                        `\n\n[Reference: Page${pageRefs.length > 1 ? 's' : ''} ${pageRefs.join(', ')}]` : 
+                        '');
             } else {
                 // No relevant content found in the PDF
                 FinalAns="I couldn't find relevant information about '"+selectedText+"' in the uploaded PDF document. "+
@@ -109,109 +119,112 @@ function EditorExtension({editor}) {
 
 
   return editor && (
-    <div className='p-5'>
-        <div className="control-group">
-            <div className="button-group flex gap-3">
-                <button
-                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                className={editor.isActive('heading', { level: 1 }) ? 'text-blue-500' : ''}
-                >
-                    <Heading1 />
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                    className={editor.isActive('heading', { level: 2 }) ? 'text-blue-500' : ''}
-                >
-                    <Heading2 />
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                    className={editor.isActive('heading', { level: 3 }) ? 'text-blue-500' : ''}
-                >
-                    <Heading3 />
-                </button>
-                <button
-                    onClick={() => editor && editor.chain().focus().toggleBold().run()}
-                    className={editor && editor.isActive('bold') ? 'text-blue-500' : ''}
-                    // disabled={!editor}
-                >
-                    <Bold />
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleItalic().run()}
-                    className={editor.isActive('italic') ? 'text-blue-500' : ''}
-                >
-                    <Italic />
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleUnderline().run()}
-                    className={editor.isActive('underline') ? 'text-blue-500' : ''}
-                >
-                    <Underline />
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleHighlight().run()}
-                    className={editor.isActive('highlight') ? 'text-blue-500' : ''}
-                >
-                    <Highlighter />
-                </button>
-                <button
-                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                    className={editor.isActive('codeBlock') ? 'text-blue-500' : ''}
-                >
-                    <Code />
-                </button>
-                <button
-                onClick={() => editor.chain().focus().toggleBulletList().run()}
-                className={editor.isActive('bulletList') ? 'text-blue-500' : ''}
-            >
-                <List />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                className={editor.isActive('orderedList') ? 'text-blue-500' : ''}
-            >
-                <ListOrdered />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().toggleStrike().run()}
-                className={editor.isActive('strike') ? 'text-blue-500' : ''}
-            >
-                <Strikethrough />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                className={editor.isActive({ textAlign: 'left' }) ? 'text-blue-500' : ''}
-            >
-                <AlignLeft />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                className={editor.isActive({ textAlign: 'center' }) ? 'text-blue-500' : ''}
-            >
-                <AlignCenter />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                className={editor.isActive({ textAlign: 'right' }) ? 'text-blue-500' : ''}
-            >
-                <AlignRight />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-                className={editor.isActive({ textAlign: 'justify' }) ? 'text-blue-500' : ''}
-            >
-                <AlignJustify />
-            </button>
-
-            <button
-                onClick={() => onAiClick()}
-                className={'hover:text-blue-500'}
-            >
-                <Sparkles />
-            </button>
-            </div>
+    <div className='p-3 border-b overflow-x-auto'>
+      <div className="flex flex-wrap gap-1 sm:gap-2 min-w-max">
+        <div className="flex flex-wrap gap-1 sm:gap-2 items-center">
+          <button
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 1 }) ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Heading1 className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 2 }) ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Heading2 className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('heading', { level: 3 }) ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Heading3 className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <div className="w-px h-6 bg-gray-200 mx-1"></div>
+          <button
+            onClick={() => editor && editor.chain().focus().toggleBold().run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor && editor.isActive('bold') ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Bold className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('italic') ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Italic className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('underline') ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Underline className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleHighlight().run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('highlight') ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Highlighter className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('strike') ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Strikethrough className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <div className="w-px h-6 bg-gray-200 mx-1"></div>
+          <button
+            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('codeBlock') ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <Code className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('bulletList') ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <List className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive('orderedList') ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <ListOrdered className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <div className="w-px h-6 bg-gray-200 mx-1"></div>
+          <button
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive({ textAlign: 'left' }) ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <AlignLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive({ textAlign: 'center' }) ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <AlignCenter className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive({ textAlign: 'right' }) ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <AlignRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+            className={`p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors ${editor.isActive({ textAlign: 'justify' }) ? 'text-blue-500 bg-blue-50' : ''}`}
+          >
+            <AlignJustify className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
+          <div className="w-px h-6 bg-gray-200 mx-1"></div>
+          <button
+            onClick={() => onAiClick()}
+            className="p-1.5 sm:p-2 rounded hover:bg-gray-100 transition-colors text-blue-500"
+            title="AI Assistant"
+          >
+            <Sparkles className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+          </button>
         </div>
+      </div>
     </div>
   )
 }

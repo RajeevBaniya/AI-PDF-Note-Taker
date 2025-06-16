@@ -17,22 +17,38 @@ export async function GET(req){
     const loader=new WebPDFLoader(data);
     const docs=await loader.load();
 
-     let pdfTextContent='';
-     docs.forEach(doc=>{
-        pdfTextContent=pdfTextContent+doc.pageContent+' ';
-     })
+    // Modified to include page numbers
+    let pdfTextContent = [];
+    docs.forEach((doc, index) => {
+        pdfTextContent.push({
+            content: doc.pageContent,
+            pageNumber: index + 1,
+            metadata: doc.metadata
+        });
+    });
 
-    //2. Split the text into Small chucnks
+    //2. Split the text into Small chunks
     const splitter = new RecursiveCharacterTextSplitter({
         chunkSize: 1000,
         chunkOverlap: 20,
-      });
-      const output = await splitter.createDocuments([pdfTextContent]);
+    });
 
-      let splitterList=[];
-      output.forEach(doc=>{
-        splitterList.push(doc.pageContent);
-      })
+    // Modified to preserve page numbers
+    const output = await splitter.createDocuments(
+        pdfTextContent.map(doc => doc.content),
+        pdfTextContent.map(doc => ({
+            pageNumber: doc.pageNumber,
+            metadata: doc.metadata
+        }))
+    );
 
-    return NextResponse.json({result:splitterList})
+    let splitterList = [];
+    output.forEach(doc => {
+        splitterList.push({
+            content: doc.pageContent,
+            pageNumber: doc.metadata.pageNumber
+        });
+    });
+
+    return NextResponse.json({result: splitterList})
 }

@@ -10,7 +10,6 @@ import { useQuery, useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { useSave } from './SaveContext'
 import { useUser } from '@clerk/nextjs'
-import { toast } from 'sonner'
 
 function TextEditor({fileId}) {
     const { registerSaveFunction } = useSave()
@@ -54,10 +53,8 @@ function TextEditor({fileId}) {
                         fileId: fileId,
                         createdBy: user?.primaryEmailAddress?.emailAddress
                     })
-                    toast.success("Notes saved successfully!")
                 } catch (error) {
                     console.error("Save failed:", error)
-                    toast.error("Failed to save notes. Please try again.")
                     throw error
                 }
             }
@@ -68,10 +65,13 @@ function TextEditor({fileId}) {
 
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
        <EditorExtension editor={editor} />
-        <div className='overflow-scroll h-[88vh]'>
-            <EditorContent editor={editor} />
+        <div className='flex-1 overflow-y-auto'>
+            <EditorContent 
+              editor={editor} 
+              className="prose max-w-none px-4 py-2 [&>*]:mb-2 [&>*:last-child]:mb-0 [&_.ProseMirror>*]:mb-2 [&_.ProseMirror>*:last-child]:mb-0"
+            />
         </div>
     </div>
   )

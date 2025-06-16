@@ -64,3 +64,46 @@ export const GetUserFiles=query({
         return (result);
     }
 })
+
+export const DeleteFile = mutation({
+    args: {
+        fileId: v.string(),
+        storageId: v.string()
+    },
+    handler: async (ctx, args) => {
+        // Delete the file from storage
+        await ctx.storage.delete(args.storageId);
+        
+        // Delete the file entry from the database
+        const existingFile = await ctx.db
+            .query('pdfFiles')
+            .filter((q) => q.eq(q.field('fileId'), args.fileId))
+            .collect();
+
+        if (existingFile.length > 0) {
+            await ctx.db.delete(existingFile[0]._id);
+        }
+
+        // Delete associated notes
+        const existingNotes = await ctx.db
+            .query('notes')
+            .filter((q) => q.eq(q.field('fileId'), args.fileId))
+            .collect();
+
+        if (existingNotes.length > 0) {
+            await ctx.db.delete(existingNotes[0]._id);
+        }
+
+        // Delete associated document embeddings
+        const existingDocs = await ctx.db
+            .query('documents')
+            .filter((q) => q.eq(q.field('metadata'), { fileId: args.fileId }))
+            .collect();
+
+        for (const doc of existingDocs) {
+            await ctx.db.delete(doc._id);
+        }
+
+        return 'Deleted';
+    }
+});

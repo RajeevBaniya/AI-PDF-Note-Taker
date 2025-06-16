@@ -6,21 +6,27 @@ import { v } from "convex/values";
 
 export const ingest = action({
   args: {
-    splitText:v.any(),
-    fileId:v.string()
+    splitText: v.any(),
+    fileId: v.string()
   },
   handler: async (ctx, args) => {
     console.log("Ingesting document with fileId:", args.fileId);
     console.log("Number of text chunks:", args.splitText.length);
 
-    // Create metadata for each text chunk
-    const metadataArray = args.splitText.map(() => ({ fileId: args.fileId }));
+    // Create metadata for each text chunk with page numbers
+    const metadataArray = args.splitText.map(chunk => ({
+      fileId: args.fileId,
+      pageNumber: chunk.pageNumber
+    }));
+
+    // Extract content from the new format
+    const textContent = args.splitText.map(chunk => chunk.content);
 
     await ConvexVectorStore.fromTexts(
-      args.splitText, // Array of text chunks
-      metadataArray, // Array of metadata objects
+      textContent, // Array of text chunks
+      metadataArray, // Array of metadata objects with page numbers
       new GoogleGenerativeAIEmbeddings({
-        apiKey:process.env.GEMINI_API_KEY,
+        apiKey: process.env.GEMINI_API_KEY,
         model: "text-embedding-004", // 768 dimensions
         taskType: TaskType.RETRIEVAL_DOCUMENT,
         title: "Document title",
@@ -36,17 +42,18 @@ export const ingest = action({
 export const search = action({
   args: {
     query: v.string(),
-    fileId:v.string()
+    fileId: v.string()
   },
   handler: async (ctx, args) => {
     const vectorStore = new ConvexVectorStore(
       new GoogleGenerativeAIEmbeddings({
-        apiKey:process.env.GEMINI_API_KEY,
+        apiKey: process.env.GEMINI_API_KEY,
         model: "text-embedding-004", // 768 dimensions
         taskType: TaskType.RETRIEVAL_DOCUMENT,
         title: "Document title",
       }),
-      { ctx });
+      { ctx }
+    );
 
     console.log("Searching for query:", args.query);
     console.log("FileId:", args.fileId);
@@ -56,7 +63,7 @@ export const search = action({
     console.log("All search results:", allResults.length);
 
     // Filter by fileId
-    const resultOne = allResults.filter(q=>q.metadata.fileId==args.fileId);
+    const resultOne = allResults.filter(q => q.metadata.fileId == args.fileId);
     console.log("Filtered results for fileId:", resultOne.length);
     console.log("Final results:", resultOne);
 
