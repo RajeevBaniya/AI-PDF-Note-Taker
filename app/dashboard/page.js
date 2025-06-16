@@ -20,28 +20,28 @@ import {
 function DeleteConfirmationDialog({ isOpen, onClose, onConfirm, fileName, isDeleting }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="w-[95%] sm:max-w-[425px] p-4 sm:p-6">
+        <DialogHeader className="space-y-2.5">
           <DialogTitle className="flex items-center gap-2 text-red-500">
             <AlertCircle className="w-5 h-5" />
-            Confirm Deletion
+            <span>Confirm Deletion</span>
           </DialogTitle>
-          <DialogDescription className="pt-3">
-            Are you sure you want to delete <span className="font-medium text-gray-700">{fileName}</span>? 
+          <DialogDescription className="text-base text-gray-600">
+            Are you sure you want to delete <span className="font-medium text-gray-900">{fileName}</span>? 
             This action cannot be undone and will permanently remove the file and all associated notes.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="flex gap-2 sm:gap-0">
+        <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors duration-200 font-medium"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={isDeleting}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 disabled:opacity-50 flex items-center gap-2"
+            className="w-full sm:w-auto px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 disabled:opacity-50 font-medium flex items-center justify-center gap-2"
           >
             {isDeleting ? (
               <>
