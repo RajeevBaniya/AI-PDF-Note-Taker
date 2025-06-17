@@ -103,7 +103,7 @@ export default function Home() {
             <div className="max-w-2xl text-center lg:text-left mt-2 sm:mt-4">
               <p className="text-[#1e293b] text-lg sm:text-xl md:text-2xl font-normal">
                 Effortlessly extract insights and summaries from any PDF.
-                Your smarter, faster and more organized study companion.
+                Your smarter and organized study companion.
               </p>
             </div>
 
