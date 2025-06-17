@@ -90,12 +90,8 @@ function EditorExtension({editor}) {
 
                 console.log("Cleaned AI response:", rawResponse);
                 
-                // Add page references to the answer
-                const pageRefs = Array.from(pageReferences).sort((a, b) => a - b);
-                FinalAns = rawResponse + 
-                    (pageRefs.length > 0 ? 
-                        `\n\n[Reference: Page${pageRefs.length > 1 ? 's' : ''} ${pageRefs.join(', ')}]` : 
-                        '');
+                // Don't add page references to the answer
+                FinalAns = rawResponse;
             } else {
                 // No relevant content found in the PDF
                 FinalAns="I couldn't find relevant information about '"+selectedText+"' in the uploaded PDF document. "+
