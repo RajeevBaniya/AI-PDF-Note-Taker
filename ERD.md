@@ -1,8 +1,4 @@
-# Entity Relationship Diagram
-
-This document provides an Entity Relationship (ER) Diagram for the project, illustrating the database schema and the relationships between different entities.
-
-## Mermaid ER Diagram
+#ER Diagram
 
 ```mermaid
 erDiagram
