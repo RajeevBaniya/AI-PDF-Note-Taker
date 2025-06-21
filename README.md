@@ -66,10 +66,5 @@ Deploy your Next.js application on [Vercel](https://vercel.com/new). For Convex 
 npx convex push
 ```
 
-## Hydration Warnings & Troubleshooting
 
-If you encounter hydration errors (for example, due to mismatched class names), consider:
-- Verifying that no client-only code (e.g. `if(typeof window !== 'undefined')`) is inadvertently executed during SSR.
-- Using the `suppressHydrationWarning` prop on elements with dynamic class names if the issue is non-critical.
-- Checking for browser extension interference.
 
